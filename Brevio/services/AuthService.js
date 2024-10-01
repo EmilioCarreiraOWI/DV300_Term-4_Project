@@ -1,4 +1,4 @@
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../config/FirebaseConfig";
 import { collection, getDocs, doc, setDoc } from "firebase/firestore";
 
@@ -57,5 +57,21 @@ export const updateUserInformation = async (userId, userInfo) => {
         console.error("Error updating user information: ", error);
         // Return error status
         return { success: false, error: error };
+    }
+}
+
+// Function to handle user sign-up using email and password
+export const handleSignUp = async (email, password) => {
+    try {
+        // Attempt to create a new user with provided credentials
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log("Signed up user: ", user.email);
+        // Create user document in the database
+        await updateUserInformation(user.uid, { email: user.email });
+        return { success: true, user: user };
+    } catch (error) {
+        console.error("Sign-up error: ", error.message);
+        return { success: false, error: error.message };
     }
 }
