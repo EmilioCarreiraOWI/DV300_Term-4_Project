@@ -46,8 +46,8 @@ function BottomTabs() {
         },
         tabBarActiveTintColor: '#FFF',
         tabBarInactiveTintColor: '#323232',
-        tabBarStyle: { backgroundColor: '#108DF9' },
-        headerShown: false // Ensure header is shown for all screens
+        tabBarStyle: { backgroundColor: '#F39C12' },
+        headerShown: false
       })}
     >
       <Tab.Screen name="Home" component={HomePage} />

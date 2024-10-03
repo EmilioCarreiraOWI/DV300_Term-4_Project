@@ -27,9 +27,7 @@ const FilePage = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-        <Text style={styles.signOutButtonText}>Sign Out</Text>
-      </TouchableOpacity>
+      
       <Text style={styles.header}>Stared</Text>
       <View style={styles.documentRow}>
         {documents.slice(0, 2).map((doc, index) => (
@@ -47,6 +45,9 @@ const FilePage = () => {
             <Text style={styles.title}>{doc.title}</Text>
           </View>
         ))}
+      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+        <Text style={styles.signOutButtonText}>Sign Out</Text>
+      </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -65,12 +66,12 @@ const styles = StyleSheet.create({
   documentRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
   },
   document: {
-    width: '45%',
+    width: '48%',
     backgroundColor: '#34495E',
-    margin: 10,
+    marginVertical: 10,
     borderRadius: 10,
     overflow: 'hidden',
   },

@@ -33,20 +33,21 @@ const LoginPage = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Brevio</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, error ? styles.inputError : null]} 
         placeholder="Email..."
         placeholderTextColor="#888"
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
-        style={styles.input}
+        style={[styles.input, error ? styles.inputError : null]}
         placeholder="Password..."
         placeholderTextColor="#888"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.buttonText}>Sign Up</Text>
@@ -79,6 +80,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#FFFFFF',
   },
+  inputError: {
+    borderColor: 'red',
+    borderWidth: 1,
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -101,6 +106,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFF',
     fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 20,
   },
 });
 

@@ -1,23 +1,24 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HomePage = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>Brevio</Text>
       <TouchableOpacity style={styles.scanButton}>
-        <Text style={styles.scanButtonText}>Click for Scan</Text>
+        <Ionicons name="camera" size={50} color="#F39C12" />
+        <Text style={styles.ButtonText}>Click for Scan</Text>
       </TouchableOpacity>
-      <Text style={styles.header}>Recent Scan</Text>
-      <View style={styles.documentContainer}>
-        {/* Placeholder for documents */}
-        <View style={styles.document}>
-          <Text style={styles.title}>Document 1</Text>
-        </View>
-        <View style={styles.document}>
-          <Text style={styles.title}>Document 2</Text>
-        </View>
-      </View>
+      {/* Placeholder for documents */}
+      <TouchableOpacity style={styles.scanButton}>
+        <Ionicons name="add" size={50} color="#F39C12" />
+        <Text style={styles.ButtonText}>Add Your PDF</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.scanButton}>
+        <Ionicons name="create" size={50} color="#F39C12" />
+        <Text style={styles.ButtonText}>Add Your Copied work</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -26,22 +27,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#2C3E50',
+    justifyContent: 'center',
+    
   },
   logo: {
     color: '#F39C12',
-    fontSize: 36,
+    fontSize: 55,
     textAlign: 'center',
     marginVertical: 20,
   },
   scanButton: {
-    backgroundColor: '#34495E',
+    backgroundColor: '#232323',
     marginHorizontal: 20,
     paddingVertical: 20,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#000000',
+    height: '20%',
+    marginBottom: 20,
   },
-  scanButtonText: {
-    color: '#F39C12',
+  ButtonText: {
+    color: '#FFFFFF',
     fontSize: 18,
   },
   header: {
@@ -56,7 +64,7 @@ const styles = StyleSheet.create({
   },
   document: {
     width: '45%',
-    backgroundColor: '#34495E',
+    backgroundColor: '#F39C12',
     margin: 10,
     borderRadius: 10,
     overflow: 'hidden',
