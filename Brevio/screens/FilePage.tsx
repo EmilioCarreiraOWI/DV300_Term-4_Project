@@ -62,11 +62,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 24,
     margin: 10,
+    marginHorizontal: 20,
   },
   documentRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginHorizontal: 10,
+    marginHorizontal: 20,
     justifyContent: 'space-between',
   },
   document: {

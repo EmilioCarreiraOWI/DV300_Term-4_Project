@@ -3,9 +3,7 @@ import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../app/index';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/FirebaseConfig'; // Adjust the path as necessary
-import { handleLogin } from '../services/AuthService'; // Import the handleLogin function
+import { handleLogin } from '../services/AuthService';
 
 // Define the navigation prop type for SignInScreen
 type SignInScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignIn'>;
@@ -22,10 +20,10 @@ const LoginPage = () => {
   // Function to handle sign in button press
   const handleSignIn = async () => {
     try {
-      await handleLogin(email, password); // Use handleLogin from AuthService
+      await handleLogin(email, password);
       console.log('Sign In pressed');
     } catch (err) {
-      setError('Invalid email or password'); // Assuming the error thrown is related to invalid credentials
+      setError('Invalid email or password');
     }
   };
 
@@ -69,7 +67,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 48,
-    color: '#E67E22',
+    color: '#F39C12',
     marginBottom: 40,
   },
   input: {

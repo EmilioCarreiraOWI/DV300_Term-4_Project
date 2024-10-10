@@ -32,9 +32,9 @@ const ScanPage = () => {
   return (
     // temporary
     <View style={styles.container}>
-      <Text style={styles.logo}>Brevio</Text>
+      
       <View style={styles.scanContainer}>
-        {/* <Image source={require('../assets/contract.png')} style={styles.scanImage} /> */}
+        <Text style={styles.logo}>Brevio</Text>
         <View style={styles.scanOverlay}>
           <View style={styles.cornerTopLeft} />
           <View style={styles.cornerTopRight} />

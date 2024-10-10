@@ -1,23 +1,37 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../app';
+import { useNavigation } from '@react-navigation/native';
+
+// Define the navigation prop type for HomePage
+type HomePageNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 const HomePage = () => {
+  const navigation = useNavigation<HomePageNavigationProp>();
+
+  const navigateToScanPage = () => {
+    navigation.navigate('Scan');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>Brevio</Text>
-      <TouchableOpacity style={styles.scanButton}>
+      <TouchableOpacity style={styles.scanButtonActive} onPress={navigateToScanPage}>
         <Ionicons name="camera" size={50} color="#F39C12" />
-        <Text style={styles.ButtonText}>Click for Scan</Text>
+        <Text style={styles.ButtonText}>Click to Scan</Text>
       </TouchableOpacity>
       {/* Placeholder for documents */}
-      <TouchableOpacity style={styles.scanButton}>
+      <TouchableOpacity style={styles.scanButtonCommingSoon}>
         <Ionicons name="add" size={50} color="#F39C12" />
         <Text style={styles.ButtonText}>Add Your PDF</Text>
+        <Text style={styles.ButtonTextCommingSoon}>(Coming Soon)</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.scanButton}>
+      <TouchableOpacity style={styles.scanButtonCommingSoon}>
         <Ionicons name="create" size={50} color="#F39C12" />
         <Text style={styles.ButtonText}>Add Your Copied work</Text>
+        <Text style={styles.ButtonTextCommingSoon}>(Coming Soon)</Text>
       </TouchableOpacity>
     </View>
   );
@@ -36,7 +50,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
   },
-  scanButton: {
+  scanButtonActive : {
     backgroundColor: '#232323',
     marginHorizontal: 20,
     paddingVertical: 20,
@@ -48,8 +62,23 @@ const styles = StyleSheet.create({
     height: '20%',
     marginBottom: 20,
   },
+  scanButtonCommingSoon : {
+    backgroundColor: 'rgba(35, 35, 35, 0.5)',
+    marginHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    height: '20%',
+    marginBottom: 20,
+  },
   ButtonText: {
     color: '#FFFFFF',
+    fontSize: 20,
+  },
+  ButtonTextCommingSoon: {
+    color: '#F39C12',
     fontSize: 18,
   },
   header: {
@@ -74,19 +103,6 @@ const styles = StyleSheet.create({
   title: {
     color: '#FFFFFF',
     fontSize: 16,
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#F39C12',
-    paddingVertical: 10,
-  },
-  navButton: {
-    alignItems: 'center',
-  },
-  navIcon: {
-    width: 30,
-    height: 30,
   },
 });
 

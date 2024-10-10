@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../app/index'; // Adjust the path as necessary
-import { handleSignUp } from '../services/AuthService'; // Adjust the path as necessary
+import { RootStackParamList } from '../app/index';
+import { handleSignUp } from '../services/AuthService';
 
 // Define the navigation prop type for SignUpScreen
 type SignUpScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUp'>;
@@ -11,6 +11,7 @@ type SignUpScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 
 const SignUp = () => {
   // Hook to access navigation functionality
   const navigation = useNavigation<SignUpScreenNavigationProp>();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,13 +21,12 @@ const SignUp = () => {
       navigation.navigate('SignIn');
     } else {
       console.error(result.error);
-      // Optionally, show an error message to the user
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Brevio</Text>
+      <Text style={styles.title}>Brevio Sign Up</Text>
       <TextInput
         style={styles.input}
         placeholder="Email..."
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 48,
-    color: '#E67E22',
+    fontSize: 45,
+    color: '#F39C12',
     marginBottom: 40,
   },
   input: {
