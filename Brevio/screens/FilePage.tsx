@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   documentRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginHorizontal: 10,
     justifyContent: 'space-between',
   },
   document: {
