@@ -15,20 +15,30 @@ const HomePage = () => {
     navigation.navigate('Scan');
   };
 
+  const navigateToAddPdf = () => {
+    navigation.navigate('AddPdf');
+  };
+
+  const navigateToCopyYourWork = () => {
+    navigation.navigate('CopyYourWork');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>Brevio</Text>
+
       <TouchableOpacity style={styles.scanButtonActive} onPress={navigateToScanPage}>
         <Ionicons name="camera" size={50} color="#F39C12" />
         <Text style={styles.ButtonText}>Click to Scan</Text>
       </TouchableOpacity>
-      {/* Placeholder for documents */}
-      <TouchableOpacity style={styles.scanButtonCommingSoon}>
+
+      <TouchableOpacity style={styles.scanButtonCommingSoon} onPress={navigateToAddPdf}>
         <Ionicons name="add" size={50} color="#F39C12" />
         <Text style={styles.ButtonText}>Add Your PDF</Text>
         <Text style={styles.ButtonTextCommingSoon}>(Coming Soon)</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.scanButtonCommingSoon}>
+      
+      <TouchableOpacity style={styles.scanButtonCommingSoon} onPress={navigateToCopyYourWork}>
         <Ionicons name="create" size={50} color="#F39C12" />
         <Text style={styles.ButtonText}>Add Your Copied work</Text>
         <Text style={styles.ButtonTextCommingSoon}>(Coming Soon)</Text>

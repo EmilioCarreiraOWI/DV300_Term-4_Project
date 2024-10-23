@@ -40,6 +40,29 @@ const ScanPage = () => {
     }
   };
 
+  const takePicture = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera permissions to make this work!');
+        return;
+      }
+
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error taking picture:', error);
+    }
+  };
+
   const analyzeImage = async () => {
     try {
       if (!imageUri) {
@@ -128,6 +151,10 @@ const ScanPage = () => {
 
       <TouchableOpacity onPress={pickImage} style={styles.button}>
         <Text>Pick an image</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={takePicture} style={styles.button}>
+        <Text>Take a picture</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={analyzeImage} style={styles.button}>

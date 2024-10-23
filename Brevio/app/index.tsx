@@ -8,12 +8,15 @@ import SignUp from '../screens/SignUp';
 import HomePage from '../screens/HomePage';
 import ScanPage from '../screens/ScanPage';
 import FilePage from '../screens/FilePage';
-
+import AddPdf from '../screens/AddPdf';
+import CopyYourWork from '../screens/CopyYourWork';
 // Define the types for navigation parameters
 export type RootStackParamList = {
   Home: undefined;
   Scan: undefined;
   File: undefined;
+  CopyYourWork: undefined;
+  AddPdf: undefined;
   SignIn: undefined;
   SignUp: undefined;
 };
@@ -36,6 +39,12 @@ function BottomTabs() {
             case 'Scan':
               iconName = focused ? 'scan' : 'scan-outline';
               break;
+            case 'CopyYourWork':
+              iconName = focused ? 'copy' : 'copy-outline';
+              break;
+            case 'AddPdf':
+              iconName = focused ? 'add' : 'add-outline';
+              break;
             case 'File':
               iconName = focused ? 'file-tray' : 'file-tray-outline';
               break;
@@ -53,6 +62,8 @@ function BottomTabs() {
       <Tab.Screen name="Home" component={HomePage} />
       <Tab.Screen name="Scan" component={ScanPage} />
       <Tab.Screen name="File" component={FilePage} />
+      <Tab.Screen name="CopyYourWork" component={CopyYourWork} /> 
+      <Tab.Screen name="AddPdf" component={AddPdf} />
     </Tab.Navigator>
   );
 }
