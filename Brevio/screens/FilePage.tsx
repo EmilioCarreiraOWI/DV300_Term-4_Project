@@ -1,41 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
-import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
+import { firestore } from '../config/FirebaseConfig'; // Import Firestore
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'; // Import Firestore functions
 
-interface Folder {
-  name: string;
-  imageUrl: string;
+interface DocumentData {
+  folderName: string;
+  description: string;
+  summarizedText: string;
 }
 
 const FilePage = () => {
   const navigation = useNavigation();
   const auth = getAuth();
-  const storage = getStorage();
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [documents, setDocuments] = useState<DocumentData[]>([]);
 
   useEffect(() => {
-    const fetchFolders = async () => {
+    const fetchDocuments = async () => {
       try {
-        const storageRef = ref(storage, ''); // Root reference
-        const result = await listAll(storageRef);
-        const folderPromises = result.prefixes.map(async (folderRef) => {
-          const imagesResult = await listAll(folderRef);
-          const imageUrl = imagesResult.items.length > 0
-            ? await getDownloadURL(imagesResult.items[0]) // Get the first image URL
-            : '';
-          return { name: folderRef.name, imageUrl };
-        });
-
-        const folderData = await Promise.all(folderPromises);
-        setFolders(folderData);
+        const brevioFilesCollection = collection(firestore, 'Brevio_files');
+        const querySnapshot = await getDocs(brevioFilesCollection);
+        const docsData = querySnapshot.docs.map(doc => doc.data() as DocumentData);
+        setDocuments(docsData);
       } catch (error) {
-        console.error('Error fetching folders: ', error);
+        console.error('Error fetching documents: ', error);
       }
     };
 
-    fetchFolders();
+    fetchDocuments();
+
+    const unsubscribe = onSnapshot(collection(firestore, 'Brevio_files'), (snapshot) => {
+      const updatedDocsData = snapshot.docs.map(doc => doc.data() as DocumentData);
+      setDocuments(updatedDocsData);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const handleSignOut = async () => {
@@ -47,18 +47,19 @@ const FilePage = () => {
     }
   };
 
+  const handleDocumentPress = (document: DocumentData) => {
+    navigation.navigate('DocumentDetail', { document });
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Folders</Text>
-      <View style={styles.folderContainer}>
-        {folders.map((folder, index) => (
-          <TouchableOpacity key={index} style={styles.folderButton}>
-            {folder.imageUrl ? (
-              <Image source={{ uri: folder.imageUrl }} style={styles.folderImage} />
-            ) : (
-              <Text style={styles.noImageText}>No Image</Text>
-            )}
-            <Text style={styles.folderText}>{folder.name}</Text>
+      <Text style={styles.header}>Documents</Text>
+      <View style={styles.documentContainer}>
+        {documents.map((doc, index) => (
+          <TouchableOpacity key={index} style={styles.documentCard} onPress={() => handleDocumentPress(doc)}>
+            <Text style={styles.documentTitle}>{doc.folderName}</Text>
+            <Text style={styles.documentDescription}>{doc.description}</Text>
+            <Text style={styles.documentSummary}>{doc.summarizedText}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -80,30 +81,28 @@ const styles = StyleSheet.create({
     margin: 10,
     marginHorizontal: 20,
   },
-  folderContainer: {
+  documentContainer: {
     marginHorizontal: 20,
   },
-  folderButton: {
+  documentCard: {
     backgroundColor: '#34495E',
     padding: 15,
     marginVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
   },
-  folderImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-    borderRadius: 10,
+  documentTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
   },
-  noImageText: {
+  documentDescription: {
     color: '#FFFFFF',
     fontSize: 16,
     marginBottom: 10,
   },
-  folderText: {
+  documentSummary: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
   },
   signOutButton: {
     backgroundColor: '#E74C3C',

@@ -10,17 +10,19 @@ import ScanPage from '../screens/ScanPage';
 import FilePage from '../screens/FilePage';
 import AddPdf from '../screens/AddPdf';
 import CopyYourWork from '../screens/CopyYourWork';
+import DocumentDetailPage from '../screens/DocumentDetailPage';
 // Define the types for navigation parameters
 export type RootStackParamList = {
   Home: undefined;
   Scan: undefined;
   File: undefined;
-  CopyYourWork: undefined;
-  AddPdf: undefined;
+  'Copy Your Work': undefined;
+  'Add your PDF': undefined;
   SignIn: undefined;
   SignUp: undefined;
+  DocumentDetail: { document: Document };
 };
-
+  
 // Create stack navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -39,12 +41,6 @@ function BottomTabs() {
             case 'Scan':
               iconName = focused ? 'scan' : 'scan-outline';
               break;
-            case 'CopyYourWork':
-              iconName = focused ? 'copy' : 'copy-outline';
-              break;
-            case 'AddPdf':
-              iconName = focused ? 'add' : 'add-outline';
-              break;
             case 'File':
               iconName = focused ? 'file-tray' : 'file-tray-outline';
               break;
@@ -62,8 +58,6 @@ function BottomTabs() {
       <Tab.Screen name="Home" component={HomePage} />
       <Tab.Screen name="Scan" component={ScanPage} />
       <Tab.Screen name="File" component={FilePage} />
-      <Tab.Screen name="CopyYourWork" component={CopyYourWork} /> 
-      <Tab.Screen name="AddPdf" component={AddPdf} />
     </Tab.Navigator>
   );
 }
@@ -90,7 +84,12 @@ export default function Index() {
   return (
     <Stack.Navigator>
       {loggedIn ? (
-        <Stack.Screen name="Home" component={BottomTabs} options={{ headerShown: false }} />
+        <>
+          <Stack.Screen name="Home" component={BottomTabs} options={{ headerShown: false }} />
+          <Stack.Screen name="DocumentDetail" component={DocumentDetailPage} options={{ headerShown: true }} />
+          <Stack.Screen name="Copy Your Work" component={CopyYourWork} />
+          <Stack.Screen name="Add your PDF" component={AddPdf} />
+        </>
       ) : (
         <>
           <Stack.Screen name="SignIn" component={Login} options={{ headerShown: false }} />

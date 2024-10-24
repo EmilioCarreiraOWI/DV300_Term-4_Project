@@ -7,6 +7,8 @@ import { PDFDocument, rgb } from 'pdf-lib';
 import { ref, uploadBytes } from 'firebase/storage';
 import { storage } from '../config/FirebaseConfig';
 import RNFetchBlob from 'rn-fetch-blob';
+import { firestore } from '../config/FirebaseConfig'; // Import Firestore
+import { collection, addDoc } from 'firebase/firestore'; // Import Firestore functions
 
 // Or define the Label type if it's not imported
 type Label = {
@@ -23,8 +25,8 @@ interface AnnotationType {
 const ScanPage = () => {
 
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const [labels, setLabels] = useState<AnnotationType[]>([]);
   const [summarizedText, setSummarizedText] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>('default-folder');
 
@@ -102,7 +104,7 @@ const ScanPage = () => {
 
       // Extract only the words from the text annotations
       const words = textAnnotations.map((text: any) => text.description).join(' ');
-      setLabels([{ mid: '', description: words }]); // Set the words as labels
+      setDescription(words); // Set the words as description
 
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -128,79 +130,22 @@ const ScanPage = () => {
 
   const { width: screenWidth } = Dimensions.get('window');
 
-  const convertToPDF = async () => {
+  const uploadDataToFirestore = async (description: string, summarizedText: string, folderName: string) => {
     try {
-      if (!imageUri) {
-        alert('No image selected');
-        return;
-      }
+      // Reference to the Firestore collection
+      const brevioFilesCollection = collection(firestore, 'Brevio_files');
 
-      // Fetch the image as a base64 string
-      const base64Image = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: FileSystem.EncodingType.Base64,
+      // Add a new document with the description and summarized text
+      await addDoc(brevioFilesCollection, {
+        folderName,
+        description,
+        summarizedText,
+        timestamp: new Date() // Optionally add a timestamp
       });
 
-      // Convert the base64 string to a Uint8Array
-      const imageUint8Array = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
-
-      // Create a new PDF document
-      const pdfDoc = await PDFDocument.create();
-
-      // Determine the image format and embed it
-      let image;
-      if (imageUri.endsWith('.png')) {
-        image = await pdfDoc.embedPng(imageUint8Array);
-      } else if (imageUri.endsWith('.jpg') || imageUri.endsWith('.jpeg')) {
-        image = await pdfDoc.embedJpg(imageUint8Array);
-      } else {
-        throw new Error('Unsupported image format');
-      }
-
-      // Get the dimensions of the image
-      const { width, height } = image.scale(1);
-
-      // Add a page to the document
-      const page = pdfDoc.addPage([width, height]);
-
-      // Draw the image onto the page
-      page.drawImage(image, {
-        x: 0,
-        y: 0,
-        width,
-        height,
-      });
-
-      // Serialize the PDFDocument to bytes
-      const pdfBytes = await pdfDoc.save();
-
-      // Use RNFetchBlob to handle the binary data
-      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-      // Create a reference to the PDF file in Firebase Storage
-      const pdfRef = ref(storage, 'scannedImage.pdf');
-      // Upload the PDF file
-      await uploadBytes(pdfRef, pdfBlob);
-
-      // alert('PDF uploaded to Firebase Storage successfully!');
+      console.log('Data uploaded to Firestore successfully!');
     } catch (error) {
-      console.error('Error converting to PDF:', error);
-    }
-  };
-
-  const uploadDataToFirebase = async (data: any, folderName: string, fileName: string) => {
-    try {
-      // Convert data to a Blob if necessary
-      const blob = new Blob([data], { type: 'application/octet-stream' });
-
-      // Create a reference to the file in a specific folder in Firebase Storage
-      const fileRef = ref(storage, `${folderName}/${fileName}`);
-
-      // Upload the file
-      await uploadBytes(fileRef, blob);
-
-      // alert(`${fileName} uploaded to Firebase Storage successfully in folder ${folderName}!`);
-    } catch (error) {
-      console.error('Error uploading data to Firebase:', error);
+      console.error('Error uploading data to Firestore:', error);
     }
   };
 
@@ -214,14 +159,17 @@ const ScanPage = () => {
 
   const uploadData = async () => {
     try {
-      // Example: Convert labels to JSON and upload
-      const labelsJson = JSON.stringify(labels);
-      await uploadDataToFirebase(labelsJson, folderName, 'labels.json');
-
-      // Example: Convert summarized text to a Blob and upload
-      await uploadDataToFirebase(summarizedText, folderName, 'summary.txt');
+      // Upload data to Firestore instead of Firebase Storage
+      await uploadDataToFirestore(description, summarizedText, folderName);
 
       setModalVisible(false); // Hide the modal after upload
+      alert('Data has been successfully saved to Firestore!'); // Alert the user
+
+      // Clear the page for the next usage
+      setImageUri(null);
+      setDescription('');
+      setSummarizedText('');
+      setFolderName('default-folder');
     } catch (error) {
       console.error('Error uploading data:', error);
     }
@@ -247,10 +195,6 @@ const ScanPage = () => {
 
       <TouchableOpacity onPress={analyzeImage} style={styles.touchableButtonBottom}>
         <Text style={styles.buttonText}>Analyze Image</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={convertToPDF} style={styles.touchableButtonBottom}>
-        <Text style={styles.buttonText}>Convert to PDF</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleDataAndUpload} style={styles.touchableButtonBottom}>
@@ -294,11 +238,11 @@ const ScanPage = () => {
         )
       }
       {
-        labels.length > 0 && (
+        description && (
           <View style={styles.labelsContainer}>
             <Text>Detected Words:</Text>
             <Text style={styles.labelText}>
-              {labels.map(label => label.description).join(' ')}
+              {description}
             </Text>
           </View>
         )
