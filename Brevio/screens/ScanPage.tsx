@@ -22,6 +22,10 @@ interface AnnotationType {
     description: string;
 }
 
+interface OpenAIResponse {
+  choices: { text: string }[];
+}
+
 const ScanPage = () => {
 
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -77,7 +81,7 @@ const ScanPage = () => {
         return;
       }
 
-      const apiKey = 'AIzaSyBLwVFMz25PTng-_XHwN8vTa1d9JePbDzk';
+      const apiKey = '';
       const url = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
 
       const base64Image = await FileSystem.readAsStringAsync(imageUri, {
@@ -115,16 +119,61 @@ const ScanPage = () => {
     }
   };
 
-  const summarizeTextWithAPI = async (text: string): Promise<string> => {
+  const summarizeTextWithOpenAI = async (text: string): Promise<string> => {
+    const url = 'https://api.openai.com/v1/chat/completions';
+    const apiKey = '';
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    };
+
+    // Calculate max_tokens based on input text length
+    const maxTokens = Math.min(100, Math.floor(text.length / 5)); // Adjust the divisor to control summary length
+
+    const data = {
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful assistant that summarizes text briefly.',
+        },
+        { role: 'user', content: text },
+      ],
+      max_tokens: maxTokens, // Use calculated max_tokens
+      temperature: 0.7, // Optional: Adjust the randomness of the output
+    };
+
     try {
-      const response = await axios.post('YOUR_SUMMARIZATION_API_URL', {
-        text: text,
-        // Add any required parameters for the API
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data),
       });
-      return response.data.summary; // Adjust based on the API's response structure
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('OpenAI API response:', result); // Log the entire response
+
+      if (!result.choices || result.choices.length === 0) {
+        throw new Error('No choices returned from OpenAI API');
+      }
+
+      return result.choices[0].message.content;
     } catch (error) {
-      console.error('Error summarizing text:', error);
-      return 'Error summarizing text';
+      console.error('Error in summarizeTextWithOpenAI:', error);
+      throw error; // Re-throw the error to be caught in handleSummarizeAndDisplay
+    }
+  };
+
+  const handleSummarizeAndDisplay = async () => {
+    try {
+      const summary = await summarizeTextWithOpenAI(description);
+      setSummarizedText(summary);
+    } catch (error) {
+      console.error('Error handling summarization:', error);
     }
   };
 
@@ -199,6 +248,10 @@ const ScanPage = () => {
 
       <TouchableOpacity onPress={handleDataAndUpload} style={styles.touchableButtonBottom}>
         <Text style={styles.buttonText}>Upload Data</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={handleSummarizeAndDisplay} style={styles.touchableButtonBottom}>
+        <Text style={styles.buttonText}>Summarize Text</Text>
       </TouchableOpacity>
 
       <Modal

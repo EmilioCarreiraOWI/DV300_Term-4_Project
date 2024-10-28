@@ -58,8 +58,8 @@ const FilePage = () => {
         {documents.map((doc, index) => (
           <TouchableOpacity key={index} style={styles.documentCard} onPress={() => handleDocumentPress(doc)}>
             <Text style={styles.documentTitle}>{doc.folderName}</Text>
-            <Text style={styles.documentDescription}>{doc.description}</Text>
-            <Text style={styles.documentSummary}>{doc.summarizedText}</Text>
+            {/* <Text style={styles.documentDescription}>{doc.description}</Text>
+            <Text style={styles.documentSummary}>{doc.summarizedText}</Text> */}
           </TouchableOpacity>
         ))}
       </View>
