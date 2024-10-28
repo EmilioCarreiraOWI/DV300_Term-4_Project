@@ -1,20 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions, TextInput, Modal, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions, TextInput, Modal } from 'react-native';
 import { useState } from 'react';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import { PDFDocument, rgb } from 'pdf-lib';
-import { ref, uploadBytes } from 'firebase/storage';
-import { storage } from '../config/FirebaseConfig';
-import RNFetchBlob from 'rn-fetch-blob';
-import { firestore } from '../config/FirebaseConfig'; // Import Firestore
-import { collection, addDoc } from 'firebase/firestore'; // Import Firestore functions
-
-// Or define the Label type if it's not imported
-type Label = {
-  mid: string;
-  description: string;
-};
+import { firestore } from '../config/FirebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
+import Config from 'react-native-config';
 
 // Define the type for combinedAnnotations
 interface AnnotationType {
@@ -22,17 +13,15 @@ interface AnnotationType {
     description: string;
 }
 
-interface OpenAIResponse {
-  choices: { text: string }[];
-}
-
 const ScanPage = () => {
-
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [summarizedText, setSummarizedText] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>('default-folder');
+
+  const apiKey = Config.REACT_APP_GOOGLE_CLOUD_API_KEY;
+  const openAIKey = Config.REACT_APP_OPENAI_API_KEY;
 
   const pickImage = async () => {
     try {
@@ -81,7 +70,6 @@ const ScanPage = () => {
         return;
       }
 
-      const apiKey = '';
       const url = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
 
       const base64Image = await FileSystem.readAsStringAsync(imageUri, {
@@ -106,9 +94,8 @@ const ScanPage = () => {
       const apiResponse = await axios.post(url, requestData);
       const textAnnotations = apiResponse.data.responses[0].textAnnotations || [];
 
-      // Extract only the words from the text annotations
       const words = textAnnotations.map((text: any) => text.description).join(' ');
-      setDescription(words); // Set the words as description
+      setDescription(words);
 
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -121,14 +108,12 @@ const ScanPage = () => {
 
   const summarizeTextWithOpenAI = async (text: string): Promise<string> => {
     const url = 'https://api.openai.com/v1/chat/completions';
-    const apiKey = '';
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
+      'Authorization': `Bearer ${openAIKey}`,
     };
 
-    // Calculate max_tokens based on input text length
-    const maxTokens = Math.min(100, Math.floor(text.length / 5)); // Adjust the divisor to control summary length
+    const maxTokens = Math.min(100, Math.floor(text.length / 5));
 
     const data = {
       model: 'gpt-3.5-turbo',
@@ -139,8 +124,8 @@ const ScanPage = () => {
         },
         { role: 'user', content: text },
       ],
-      max_tokens: maxTokens, // Use calculated max_tokens
-      temperature: 0.7, // Optional: Adjust the randomness of the output
+      max_tokens: maxTokens,
+      temperature: 0.7,
     };
 
     try {
@@ -155,7 +140,7 @@ const ScanPage = () => {
       }
 
       const result = await response.json();
-      console.log('OpenAI API response:', result); // Log the entire response
+      console.log('OpenAI API response:', result);
 
       if (!result.choices || result.choices.length === 0) {
         throw new Error('No choices returned from OpenAI API');
@@ -164,7 +149,7 @@ const ScanPage = () => {
       return result.choices[0].message.content;
     } catch (error) {
       console.error('Error in summarizeTextWithOpenAI:', error);
-      throw error; // Re-throw the error to be caught in handleSummarizeAndDisplay
+      throw error;
     }
   };
 
@@ -181,15 +166,13 @@ const ScanPage = () => {
 
   const uploadDataToFirestore = async (description: string, summarizedText: string, folderName: string) => {
     try {
-      // Reference to the Firestore collection
       const brevioFilesCollection = collection(firestore, 'Brevio_files');
 
-      // Add a new document with the description and summarized text
       await addDoc(brevioFilesCollection, {
         folderName,
         description,
         summarizedText,
-        timestamp: new Date() // Optionally add a timestamp
+        timestamp: new Date()
       });
 
       console.log('Data uploaded to Firestore successfully!');
@@ -200,7 +183,7 @@ const ScanPage = () => {
 
   const handleDataAndUpload = async () => {
     try {
-      setModalVisible(true); // Show the modal to get folder name
+      setModalVisible(true);
     } catch (error) {
       console.error('Error handling data:', error);
     }
@@ -208,13 +191,11 @@ const ScanPage = () => {
 
   const uploadData = async () => {
     try {
-      // Upload data to Firestore instead of Firebase Storage
       await uploadDataToFirestore(description, summarizedText, folderName);
 
-      setModalVisible(false); // Hide the modal after upload
-      alert('Data has been successfully saved to Firestore!'); // Alert the user
+      setModalVisible(false);
+      alert('Data has been successfully saved to Firestore!');
 
-      // Clear the page for the next usage
       setImageUri(null);
       setDescription('');
       setSummarizedText('');
@@ -224,15 +205,23 @@ const ScanPage = () => {
     }
   };
 
-  return (
-    // temporary
-    <ScrollView contentContainerStyle={styles.container}>
+  const analyzeAndSummarize = async () => {
+    try {
+      await analyzeImage();
+      const summary = await summarizeTextWithOpenAI(description);
+      setSummarizedText(summary);
+    } catch (error) {
+      console.error('Error in analyze and summarize:', error);
+    }
+  };
 
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Google Cloud Vision API</Text>
 
       {imageUri && <Image source={{ uri: imageUri }} style={{ width: screenWidth, height: screenWidth, resizeMode: 'contain' }} />}
       
-     <View style={styles.buttonRow}>
+      <View style={styles.buttonRow}>
         <TouchableOpacity onPress={pickImage} style={styles.touchableButtonRow}>
           <Text style={styles.buttonText}>Pick an Image</Text>
         </TouchableOpacity>
@@ -242,16 +231,12 @@ const ScanPage = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={analyzeImage} style={styles.touchableButtonBottom}>
-        <Text style={styles.buttonText}>Analyze Image</Text>
+      <TouchableOpacity onPress={analyzeAndSummarize} style={styles.touchableButtonBottom}>
+        <Text style={styles.buttonText}>Analyze & Summarize</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleDataAndUpload} style={styles.touchableButtonBottom}>
         <Text style={styles.buttonText}>Upload Data</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={handleSummarizeAndDisplay} style={styles.touchableButtonBottom}>
-        <Text style={styles.buttonText}>Summarize Text</Text>
       </TouchableOpacity>
 
       <Modal
@@ -277,7 +262,6 @@ const ScanPage = () => {
               <TouchableOpacity style={styles.signInButton} onPress={uploadData}>
                 <Text style={styles.buttonText}>Upload</Text>
               </TouchableOpacity>
-              
             </View>
           </View>
         </View>
@@ -300,7 +284,6 @@ const ScanPage = () => {
           </View>
         )
       }
-
     </ScrollView>
   );
 };
@@ -310,29 +293,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#2C3E50',
     padding: 10,
-  },
-  logo: {
-    color: '#F39C12',
-    fontSize: 36,
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  scanContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  scanImage: {
-    width: '100%',
-    height: '50%',
-    resizeMode: 'cover',
-  },
-  scanOverlay: {
-    position: 'absolute',
-    width: '100%',
-    height: '70%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   buttonRow: {
     flexDirection: 'row',
@@ -417,7 +377,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
   },
-  // Reuse signUpButton and signInButton styles from LoginPage
   signUpButton: {
     backgroundColor: '#34495E',
     padding: 15,
