@@ -20,8 +20,8 @@ const ScanPage = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>('default-folder');
 
-  const apiKey = Config.REACT_APP_GOOGLE_CLOUD_API_KEY;
-  const openAIKey = Config.REACT_APP_OPENAI_API_KEY;
+  const apiKey = '';
+  const openAIKey = '';
 
   const pickImage = async () => {
     try {
@@ -94,7 +94,8 @@ const ScanPage = () => {
       const apiResponse = await axios.post(url, requestData);
       const textAnnotations = apiResponse.data.responses[0].textAnnotations || [];
 
-      const words = textAnnotations.map((text: any) => text.description).join(' ');
+      // Extract only the words, ignoring labels
+      const words = textAnnotations.slice(1).map((text: any) => text.description).join(' ');
       setDescription(words);
 
     } catch (error) {
@@ -129,6 +130,7 @@ const ScanPage = () => {
     };
 
     try {
+      console.log('Sending request to OpenAI:', JSON.stringify(data, null, 2)); // Log request data
       const response = await fetch(url, {
         method: 'POST',
         headers,
@@ -136,6 +138,8 @@ const ScanPage = () => {
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`HTTP error! status: ${response.status}, message: ${errorText}`);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -215,6 +219,14 @@ const ScanPage = () => {
     }
   };
 
+  const resetState = () => {
+    setImageUri(null);
+    setDescription('');
+    setSummarizedText('');
+    setFolderName('default-folder');
+    setModalVisible(false);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Google Cloud Vision API</Text>
@@ -237,6 +249,10 @@ const ScanPage = () => {
 
       <TouchableOpacity onPress={handleDataAndUpload} style={styles.touchableButtonBottom}>
         <Text style={styles.buttonText}>Upload Data</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={resetState} style={styles.touchableButtonBottom}>
+        <Text style={styles.buttonText}>Reset</Text>
       </TouchableOpacity>
 
       <Modal

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
-import { firestore } from '../config/FirebaseConfig'; // Import Firestore
-import { collection, getDocs, onSnapshot } from 'firebase/firestore'; // Import Firestore functions
+import { firestore } from '../config/FirebaseConfig';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 
 interface DocumentData {
   folderName: string;
@@ -58,8 +58,6 @@ const FilePage = () => {
         {documents.map((doc, index) => (
           <TouchableOpacity key={index} style={styles.documentCard} onPress={() => handleDocumentPress(doc)}>
             <Text style={styles.documentTitle}>{doc.folderName}</Text>
-            {/* <Text style={styles.documentDescription}>{doc.description}</Text>
-            <Text style={styles.documentSummary}>{doc.summarizedText}</Text> */}
           </TouchableOpacity>
         ))}
       </View>
@@ -78,15 +76,16 @@ const styles = StyleSheet.create({
   header: {
     color: '#FFFFFF',
     fontSize: 24,
-    margin: 10,
+    marginVertical: 15,
     marginHorizontal: 20,
+    fontWeight: 'bold',
   },
   documentContainer: {
     marginHorizontal: 20,
   },
   documentCard: {
     backgroundColor: '#34495E',
-    padding: 15,
+    padding: 20,
     marginVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
@@ -94,19 +93,11 @@ const styles = StyleSheet.create({
   documentTitle: {
     color: '#FFFFFF',
     fontSize: 18,
-  },
-  documentDescription: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  documentSummary: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    fontWeight: '600',
   },
   signOutButton: {
     backgroundColor: '#E74C3C',
-    padding: 10,
+    padding: 12,
     margin: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -114,6 +105,7 @@ const styles = StyleSheet.create({
   signOutButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
