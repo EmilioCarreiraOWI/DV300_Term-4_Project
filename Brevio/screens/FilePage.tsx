@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
 import { firestore } from '../config/FirebaseConfig';
@@ -15,6 +15,7 @@ const FilePage = () => {
   const navigation = useNavigation();
   const auth = getAuth();
   const [documents, setDocuments] = useState<DocumentData[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -22,7 +23,7 @@ const FilePage = () => {
         const brevioFilesCollection = collection(firestore, 'Brevio_files');
         const querySnapshot = await getDocs(brevioFilesCollection);
         const docsData = querySnapshot.docs.map(doc => doc.data() as DocumentData);
-        setDocuments(docsData);
+        setDocuments(docsData.sort((a, b) => a.folderName.localeCompare(b.folderName)));
       } catch (error) {
         console.error('Error fetching documents: ', error);
       }
@@ -32,11 +33,15 @@ const FilePage = () => {
 
     const unsubscribe = onSnapshot(collection(firestore, 'Brevio_files'), (snapshot) => {
       const updatedDocsData = snapshot.docs.map(doc => doc.data() as DocumentData);
-      setDocuments(updatedDocsData);
+      setDocuments(updatedDocsData.sort((a, b) => a.folderName.localeCompare(b.folderName)));
     });
 
     return () => unsubscribe();
   }, []);
+
+  const filteredDocuments = documents.filter(doc =>
+    doc.folderName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleSignOut = async () => {
     try {
@@ -51,14 +56,39 @@ const FilePage = () => {
     navigation.navigate('DocumentDetail', { document });
   };
 
+  const groupDocumentsByLetter = (docs: DocumentData[]) => {
+    return docs.reduce((acc, doc) => {
+      const firstLetter = doc.folderName.charAt(0).toUpperCase();
+      if (!acc[firstLetter]) {
+        acc[firstLetter] = [];
+      }
+      acc[firstLetter].push(doc);
+      return acc;
+    }, {} as Record<string, DocumentData[]>);
+  };
+
+  const groupedDocuments = groupDocumentsByLetter(filteredDocuments);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Documents</Text>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search..."
+        placeholderTextColor="#BDC3C7"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
       <View style={styles.documentContainer}>
-        {documents.map((doc, index) => (
-          <TouchableOpacity key={index} style={styles.documentCard} onPress={() => handleDocumentPress(doc)}>
-            <Text style={styles.documentTitle}>{doc.folderName}</Text>
-          </TouchableOpacity>
+        {Object.keys(groupedDocuments).sort().map(letter => (
+          <View key={letter}>
+            <Text style={styles.letterHeader}>{letter}</Text>
+            {groupedDocuments[letter].map((doc, index) => (
+              <TouchableOpacity key={index} style={styles.documentCard} onPress={() => handleDocumentPress(doc)}>
+                <Text style={styles.documentTitle}>{doc.folderName}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         ))}
       </View>
       <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
@@ -106,6 +136,26 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  searchBar: {
+    backgroundColor: '#34495E',
+    paddingVertical: 15,
+    marginHorizontal: 'auto',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#F39C12',
+    marginBottom: 20,
+    width: '90%',
+    paddingHorizontal: '5%',
+  },
+  letterHeader: {
+    color: '#F39C12',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    marginHorizontal: 20,
   },
 });
 
