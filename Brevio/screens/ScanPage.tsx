@@ -206,6 +206,11 @@ const ScanPage = () => {
 
   const uploadData = async () => {
     try {
+      if (!folderName) {
+        alert('Please enter a folder name');
+        return;
+      }
+
       await uploadDataToFirestore(description, summarizedText, folderName);
 
       setModalVisible(false);
@@ -273,18 +278,52 @@ const ScanPage = () => {
       )}
 
       {summarizedText && (
-        <View style={styles.summaryContainer}>
-          <Text style={styles.labelText}>Summarized Text:</Text>
-          <Text style={styles.summaryText}>{summarizedText}</Text>
-        </View>
+        <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Summary</Text>
+        <Text style={styles.summary}>{summarizedText}</Text>
+      </View>
       )}
 
       {description && (
-        <View style={styles.labelsContainer}>
-          <Text style={styles.labelText}>Detected Words:</Text>
-          <Text style={styles.labelText}>{description}</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Description</Text>
+          <Text style={styles.description}>{description}</Text>
         </View>
       )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalTitle}>Enter Folder Name</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Folder Name"
+              placeholderTextColor="#ccc"
+              value={folderName}
+              onChangeText={setFolderName}
+            />
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={styles.signUpButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.signInButton}
+                onPress={uploadData}
+              >
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -380,15 +419,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
     margin: 5,
   },
-  summaryContainer: {
-    margin: 10,
+  summary: {
+    color: '#FFFFFF',
+    fontSize: 16,
     padding: 10,
     backgroundColor: '#34495E',
-    borderRadius: 5,
+    borderRadius: 10,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
-  summaryText: {
-    color: '#fff',
+  description: {
+    color: '#FFFFFF',
     fontSize: 16,
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: '#34495E',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  section: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#34495E',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  sectionTitle: {
+    color: '#F39C12',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   modalContainer: {
     flex: 1,

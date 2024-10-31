@@ -16,7 +16,9 @@ const DocumentDetailPage = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>{document.folderName}</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>{document.folderName}</Text>
+      </View>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Summary</Text>
         <Text style={styles.summary}>{document.summarizedText}</Text>
@@ -33,22 +35,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#2C3E50',
-    padding: 10, // Adjusted padding to match ScanPage
+    padding: 10,
   },
-  title: {
-    color: '#F39C12', // Updated color to match ScanPage
+  header: {
+    backgroundColor: '#34495E',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  headerText: {
+    color: '#F39C12',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
   },
   description: {
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 15,
     padding: 10,
     backgroundColor: '#34495E',
     borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   summary: {
     color: '#FFFFFF',
@@ -57,14 +74,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#34495E',
     borderRadius: 10,
     marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   section: {
     marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#34495E',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   sectionTitle: {
-    color: '#FFFFFF',
+    color: '#F39C12',
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
 

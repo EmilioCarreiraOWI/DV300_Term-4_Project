@@ -29,19 +29,19 @@ const HomePage = () => {
 
       <TouchableOpacity style={styles.scanButtonActive} onPress={navigateToScanPage}>
         <Ionicons name="camera" size={50} color="#F39C12" />
-        <Text style={styles.ButtonText}>Click to Scan</Text>
+        <Text style={styles.buttonText}>Scan Document</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.scanButtonCommingSoon} onPress={navigateToAddPdf}>
-        <Ionicons name="add" size={50} color="#F39C12" />
-        <Text style={styles.ButtonText}>Add Your PDF</Text>
-        <Text style={styles.ButtonTextCommingSoon}>(Coming Soon)</Text>
+      <TouchableOpacity style={styles.scanButtonComingSoon} onPress={navigateToAddPdf}>
+        <Ionicons name="document" size={50} color="#F39C12" />
+        <Text style={styles.buttonText}>Add PDF</Text>
+        <Text style={styles.buttonTextComingSoon}>(Coming Soon)</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity style={styles.scanButtonCommingSoon} onPress={navigateToCopyYourWork}>
-        <Ionicons name="create" size={50} color="#F39C12" />
-        <Text style={styles.ButtonText}>Add Your Copied work</Text>
-        <Text style={styles.ButtonTextCommingSoon}>(Coming Soon)</Text>
+      <TouchableOpacity style={styles.scanButtonComingSoon} onPress={navigateToCopyYourWork}>
+        <Ionicons name="clipboard" size={50} color="#F39C12" />
+        <Text style={styles.buttonText}>Copy Work</Text>
+        <Text style={styles.buttonTextComingSoon}>(Coming Soon)</Text>
       </TouchableOpacity>
     </View>
   );
@@ -52,67 +52,54 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#2C3E50',
     justifyContent: 'center',
-    
+    paddingHorizontal: 20,
   },
   logo: {
     color: '#F39C12',
     fontSize: 55,
     textAlign: 'center',
     marginVertical: 20,
+    fontWeight: 'bold',
   },
-  scanButtonActive : {
+  scanButtonActive: {
     backgroundColor: '#232323',
-    marginHorizontal: 20,
+    marginVertical: 10,
     paddingVertical: 20,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: '#000000',
-    height: '20%',
-    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
-  scanButtonCommingSoon : {
+  scanButtonComingSoon: {
     backgroundColor: 'rgba(35, 35, 35, 0.5)',
-    marginHorizontal: 20,
+    marginVertical: 10,
     paddingVertical: 20,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    height: '20%',
-    marginBottom: 20,
+    borderColor: '#000000',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
-  ButtonText: {
+  buttonText: {
     color: '#FFFFFF',
     fontSize: 20,
+    fontWeight: '600',
   },
-  ButtonTextCommingSoon: {
+  buttonTextComingSoon: {
     color: '#F39C12',
-    fontSize: 18,
-  },
-  header: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    margin: 10,
-  },
-  documentContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-  },
-  document: {
-    width: '45%',
-    backgroundColor: '#F39C12',
-    margin: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    color: '#FFFFFF',
     fontSize: 16,
+    fontWeight: '400',
   },
 });
 

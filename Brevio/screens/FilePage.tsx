@@ -102,16 +102,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#2C3E50',
+    paddingHorizontal: 20,
   },
   header: {
     color: '#FFFFFF',
-    fontSize: 24,
+    fontSize: 28,
     marginVertical: 15,
-    marginHorizontal: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   documentContainer: {
-    marginHorizontal: 20,
+    marginVertical: 10,
   },
   documentCard: {
     backgroundColor: '#34495E',
@@ -119,6 +120,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   documentTitle: {
     color: '#FFFFFF',
@@ -128,9 +134,14 @@ const styles = StyleSheet.create({
   signOutButton: {
     backgroundColor: '#E74C3C',
     padding: 12,
-    margin: 10,
+    marginVertical: 20,
     borderRadius: 5,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   signOutButtonText: {
     color: '#FFFFFF',
@@ -140,22 +151,23 @@ const styles = StyleSheet.create({
   searchBar: {
     backgroundColor: '#34495E',
     paddingVertical: 15,
-    marginHorizontal: 'auto',
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#F39C12',
     marginBottom: 20,
-    width: '90%',
-    paddingHorizontal: '5%',
+    width: '100%',
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   letterHeader: {
     color: '#F39C12',
     fontSize: 20,
     fontWeight: 'bold',
     marginVertical: 10,
-    marginHorizontal: 20,
   },
 });
 

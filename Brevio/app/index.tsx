@@ -52,6 +52,9 @@ function BottomTabs() {
         tabBarActiveTintColor: '#FFF',
         tabBarInactiveTintColor: '#323232',
         tabBarStyle: { backgroundColor: '#F39C12' },
+        headerStyle: { backgroundColor: '#34495E' },
+        headerTintColor: '#F39C12',
+        headerTitleStyle: { fontWeight: 'bold' },
         headerShown: false
       })}
     >
@@ -82,7 +85,13 @@ export default function Index() {
   }, []);
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: '#34495E' },
+        headerTintColor: '#F39C12',
+        headerTitleStyle: { fontWeight: 'bold' },
+      }}
+    >
       {loggedIn ? (
         <>
           <Stack.Screen name="Home" component={BottomTabs} options={{ headerShown: false }} />
