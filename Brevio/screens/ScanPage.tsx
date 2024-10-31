@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
@@ -19,6 +19,7 @@ const ScanPage = () => {
   const [description, setDescription] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>('default-folder');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const apiKey = '';
   const openAIKey = '';
@@ -65,6 +66,7 @@ const ScanPage = () => {
 
   const analyzeImage = async () => {
     try {
+      setIsLoading(true);
       if (!imageUri) {
         alert('No image selected');
         return;
@@ -92,9 +94,9 @@ const ScanPage = () => {
       };
 
       const apiResponse = await axios.post(url, requestData);
-      const textAnnotations = apiResponse.data.responses[0].textAnnotations || [];
+      console.log('API Response:', apiResponse.data);
 
-      // Extract only the words, ignoring labels
+      const textAnnotations = apiResponse.data.responses[0].textAnnotations || [];
       const words = textAnnotations.slice(1).map((text: any) => text.description).join(' ');
       setDescription(words);
 
@@ -104,6 +106,8 @@ const ScanPage = () => {
       } else {
         console.error('Unexpected error:', error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -157,12 +161,19 @@ const ScanPage = () => {
     }
   };
 
-  const handleSummarizeAndDisplay = async () => {
+  const summarizeText = async () => {
     try {
-      const summary = await summarizeTextWithOpenAI(description);
-      setSummarizedText(summary);
+      setIsLoading(true);
+      if (description) {
+        const summary = await summarizeTextWithOpenAI(description);
+        setSummarizedText(summary);
+      } else {
+        console.error('Description is empty');
+      }
     } catch (error) {
-      console.error('Error handling summarization:', error);
+      console.error('Error summarizing text:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -209,16 +220,6 @@ const ScanPage = () => {
     }
   };
 
-  const analyzeAndSummarize = async () => {
-    try {
-      await analyzeImage();
-      const summary = await summarizeTextWithOpenAI(description);
-      setSummarizedText(summary);
-    } catch (error) {
-      console.error('Error in analyze and summarize:', error);
-    }
-  };
-
   const resetState = () => {
     setImageUri(null);
     setDescription('');
@@ -229,10 +230,16 @@ const ScanPage = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Google Cloud Vision API</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Scan & Summarize</Text>
+      </View>
 
-      {imageUri && <Image source={{ uri: imageUri }} style={{ width: screenWidth, height: screenWidth, resizeMode: 'contain' }} />}
-      
+      {imageUri && (
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: imageUri }} style={styles.image} />
+        </View>
+      )}
+
       <View style={styles.buttonRow}>
         <TouchableOpacity onPress={pickImage} style={styles.touchableButtonRow}>
           <Text style={styles.buttonText}>Pick an Image</Text>
@@ -243,9 +250,15 @@ const ScanPage = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={analyzeAndSummarize} style={styles.touchableButtonBottom}>
-        <Text style={styles.buttonText}>Analyze & Summarize</Text>
+      <TouchableOpacity onPress={analyzeImage} style={styles.touchableButtonBottom}>
+        <Text style={styles.buttonText}>Analyze Image</Text>
       </TouchableOpacity>
+
+      {description && (
+        <TouchableOpacity onPress={summarizeText} style={styles.touchableButtonBottom}>
+          <Text style={styles.buttonText}>Summarize Text</Text>
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity onPress={handleDataAndUpload} style={styles.touchableButtonBottom}>
         <Text style={styles.buttonText}>Upload Data</Text>
@@ -255,51 +268,23 @@ const ScanPage = () => {
         <Text style={styles.buttonText}>Reset</Text>
       </TouchableOpacity>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Enter Folder Name</Text>
-            <TextInput
-              style={[styles.input, styles.modalInput]}
-              onChangeText={setFolderName}
-              value={folderName}
-              placeholder="Folder Name"
-              placeholderTextColor="#888"
-            />
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity style={styles.signUpButton} onPress={() => setModalVisible(false)}>
-                <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.signInButton} onPress={uploadData}>
-                <Text style={styles.buttonText}>Upload</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+      {isLoading && (
+        <ActivityIndicator size="large" color="#F39C12" style={{ marginVertical: 20 }} />
+      )}
+
+      {summarizedText && (
+        <View style={styles.summaryContainer}>
+          <Text style={styles.labelText}>Summarized Text:</Text>
+          <Text style={styles.summaryText}>{summarizedText}</Text>
         </View>
-      </Modal>
-      {
-        summarizedText && (
-          <View style={styles.summaryContainer}>
-            <Text>Summarized Text:</Text>
-            <Text style={styles.summaryText}>{summarizedText}</Text>
-          </View>
-        )
-      }
-      {
-        description && (
-          <View style={styles.labelsContainer}>
-            <Text>Detected Words:</Text>
-            <Text style={styles.labelText}>
-              {description}
-            </Text>
-          </View>
-        )
-      }
+      )}
+
+      {description && (
+        <View style={styles.labelsContainer}>
+          <Text style={styles.labelText}>Detected Words:</Text>
+          <Text style={styles.labelText}>{description}</Text>
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -310,38 +295,82 @@ const styles = StyleSheet.create({
     backgroundColor: '#2C3E50',
     padding: 10,
   },
+  header: {
+    backgroundColor: '#34495E',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  headerText: {
+    color: '#F39C12',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  card: {
+    backgroundColor: '#34495E',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 20,
   },
   touchableButtonRow: {
-    backgroundColor: '#34495E',
+    backgroundColor: '#F39C12',
     paddingVertical: 15,
     marginHorizontal: 5,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#F39C12',
     width: '48%',
-    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   touchableButtonBottom: {
-    backgroundColor: '#34495E',
+    backgroundColor: '#F39C12',
     paddingVertical: 15,
     marginHorizontal: 5,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#F39C12',
     marginBottom: 20,
     width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    resizeMode: 'contain',
   },
   labelsContainer: {
     margin: 10,
