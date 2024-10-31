@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput } from 
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
 import { firestore } from '../config/FirebaseConfig';
-import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 
 interface DocumentData {
   folderName: string;
@@ -20,10 +20,14 @@ const FilePage = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const brevioFilesCollection = collection(firestore, 'Brevio_files');
-        const querySnapshot = await getDocs(brevioFilesCollection);
-        const docsData = querySnapshot.docs.map(doc => doc.data() as DocumentData);
-        setDocuments(docsData.sort((a, b) => a.folderName.localeCompare(b.folderName)));
+        const user = auth.currentUser;
+        if (user) {
+          const brevioFilesCollection = collection(firestore, 'Brevio_files');
+          const userFilesQuery = query(brevioFilesCollection, where('userId', '==', user.uid));
+          const querySnapshot = await getDocs(userFilesQuery);
+          const docsData = querySnapshot.docs.map(doc => doc.data() as DocumentData);
+          setDocuments(docsData.sort((a, b) => a.folderName.localeCompare(b.folderName)));
+        }
       } catch (error) {
         console.error('Error fetching documents: ', error);
       }
@@ -31,13 +35,16 @@ const FilePage = () => {
 
     fetchDocuments();
 
-    const unsubscribe = onSnapshot(collection(firestore, 'Brevio_files'), (snapshot) => {
-      const updatedDocsData = snapshot.docs.map(doc => doc.data() as DocumentData);
-      setDocuments(updatedDocsData.sort((a, b) => a.folderName.localeCompare(b.folderName)));
-    });
+    const unsubscribe = onSnapshot(
+      query(collection(firestore, 'Brevio_files'), where('userId', '==', auth.currentUser?.uid)),
+      (snapshot) => {
+        const updatedDocsData = snapshot.docs.map(doc => doc.data() as DocumentData);
+        setDocuments(updatedDocsData.sort((a, b) => a.folderName.localeCompare(b.folderName)));
+      }
+    );
 
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
   const filteredDocuments = documents.filter(doc =>
     doc.folderName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -150,6 +157,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     backgroundColor: '#34495E',
+    color: '#ffffff',
     paddingVertical: 15,
     borderRadius: 10,
     borderWidth: 1,

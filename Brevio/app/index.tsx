@@ -11,6 +11,7 @@ import FilePage from '../screens/FilePage';
 import AddPdf from '../screens/AddPdf';
 import CopyYourWork from '../screens/CopyYourWork';
 import DocumentDetailPage from '../screens/DocumentDetailPage';
+import { auth } from '../config/FirebaseConfig'; // Import auth from FirebaseConfig
 // Define the types for navigation parameters
 export type RootStackParamList = {
   Home: undefined;
@@ -68,14 +69,13 @@ function BottomTabs() {
 // Main component
 export default function Index() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const auth = getAuth();
 
   // Monitor authentication state
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setLoggedIn(true);
-        console.log("User logged in..." + user.email);
+        console.log("User logged in... UID: " + user.uid);
       } else {
         setLoggedIn(false);
         console.log("No user logged in...");
@@ -87,7 +87,7 @@ export default function Index() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: '#34495E' },
+        headerStyle: { backgroundColor: '#2C3E50' },
         headerTintColor: '#F39C12',
         headerTitleStyle: { fontWeight: 'bold' },
       }}

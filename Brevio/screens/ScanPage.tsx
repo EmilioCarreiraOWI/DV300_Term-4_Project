@@ -6,6 +6,7 @@ import * as FileSystem from 'expo-file-system';
 import { firestore } from '../config/FirebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import Config from 'react-native-config';
+import { getAuth } from 'firebase/auth';
 
 // Define the type for combinedAnnotations
 interface AnnotationType {
@@ -181,18 +182,27 @@ const ScanPage = () => {
 
   const uploadDataToFirestore = async (description: string, summarizedText: string, folderName: string) => {
     try {
-      const brevioFilesCollection = collection(firestore, 'Brevio_files');
+        const auth = getAuth();
+        const user = auth.currentUser;
 
-      await addDoc(brevioFilesCollection, {
-        folderName,
-        description,
-        summarizedText,
-        timestamp: new Date()
-      });
+        if (!user) {
+            console.error('No user is currently logged in');
+            return;
+        }
 
-      console.log('Data uploaded to Firestore successfully!');
+        const brevioFilesCollection = collection(firestore, 'Brevio_files');
+
+        await addDoc(brevioFilesCollection, {
+            folderName,
+            description,
+            summarizedText,
+            userId: user.uid,
+            timestamp: new Date()
+        });
+
+        console.log('Data uploaded to Firestore successfully!');
     } catch (error) {
-      console.error('Error uploading data to Firestore:', error);
+        console.error('Error uploading data to Firestore:', error);
     }
   };
 
@@ -407,7 +417,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 300,
     borderRadius: 10,
     resizeMode: 'contain',
   },

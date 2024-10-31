@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../app/index';
 import { handleSignUp } from '../services/AuthService';
+import { addUserToFirestore } from '../services/CreateUserService'; // Import the Firestore service
 
 // Define the navigation prop type for SignUpScreen
 type SignUpScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUp'>;
@@ -14,10 +15,24 @@ const SignUp = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const onSignUp = async () => {
     const result = await handleSignUp(email, password);
     if (result.success) {
+      setModalVisible(true); // Show modal on successful sign-up
+    } else {
+      console.error(result.error);
+    }
+  };
+
+  const onSubmitNameSurname = async () => {
+    const userId = 'some-unique-user-id'; // Replace with actual user ID from auth
+    const result = await addUserToFirestore(userId, name, surname);
+    if (result.success) {
+      setModalVisible(false);
       navigation.navigate('SignIn');
     } else {
       console.error(result.error);
@@ -50,6 +65,32 @@ const SignUp = () => {
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       </View>
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalTitle}>Enter Your Details</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Name..."
+            placeholderTextColor="#7F8C8D"
+            value={name}
+            onChangeText={setName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Surname..."
+            placeholderTextColor="#7F8C8D"
+            value={surname}
+            onChangeText={setSurname}
+          />
+          <TouchableOpacity style={styles.signUpButton} onPress={onSubmitNameSurname}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -116,6 +157,17 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFFFFF',
     fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalTitle: {
+    fontSize: 24,
+    color: '#F39C12',
+    marginBottom: 20,
   },
 });
 
