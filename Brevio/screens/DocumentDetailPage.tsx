@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 interface DocumentData {
   folderName: string;
   description: string;
   summarizedText: string;
+  imageUrl: string;
 }
 
 type DocumentDetailRouteProp = RouteProp<{ params: { document: DocumentData } }, 'params'>;
@@ -19,6 +20,11 @@ const DocumentDetailPage = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>{document.folderName}</Text>
       </View>
+
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} src={document.imageUrl} />
+      </View>
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Summary</Text>
         <Text style={styles.summary}>{document.summarizedText}</Text>
@@ -41,7 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#34495E',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -96,6 +102,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
+    borderRadius: 10,
+
+  },
+  image: {
+    width: '100%',
+    height: 400,
+    borderRadius: 10,
+    resizeMode: 'contain',    
   },
 });
 

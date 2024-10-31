@@ -8,8 +8,6 @@ import SignUp from '../screens/SignUp';
 import HomePage from '../screens/HomePage';
 import ScanPage from '../screens/ScanPage';
 import FilePage from '../screens/FilePage';
-import AddPdf from '../screens/AddPdf';
-import CopyYourWork from '../screens/CopyYourWork';
 import DocumentDetailPage from '../screens/DocumentDetailPage';
 import { auth } from '../config/FirebaseConfig'; // Import auth from FirebaseConfig
 // Define the types for navigation parameters
@@ -96,8 +94,6 @@ export default function Index() {
         <>
           <Stack.Screen name="Home" component={BottomTabs} options={{ headerShown: false }} />
           <Stack.Screen name="DocumentDetail" component={DocumentDetailPage} options={{ headerShown: true }} />
-          <Stack.Screen name="Copy Your Work" component={CopyYourWork} />
-          <Stack.Screen name="Add your PDF" component={AddPdf} />
         </>
       ) : (
         <>

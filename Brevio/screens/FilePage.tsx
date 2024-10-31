@@ -50,15 +50,6 @@ const FilePage = () => {
     doc.folderName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigation.navigate('SignIn' as never);
-    } catch (error) {
-      console.error('Error signing out: ', error);
-    }
-  };
-
   const handleDocumentPress = (document: DocumentData) => {
     navigation.navigate('DocumentDetail', { document });
   };
@@ -78,7 +69,9 @@ const FilePage = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Documents</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Your Documents</Text>
+      </View>
       <TextInput
         style={styles.searchBar}
         placeholder="Search..."
@@ -98,9 +91,6 @@ const FilePage = () => {
           </View>
         ))}
       </View>
-      <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-        <Text style={styles.signOutButtonText}>Sign Out</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -112,11 +102,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    color: '#FFFFFF',
-    fontSize: 28,
-    marginVertical: 15,
+    backgroundColor: '#34495E',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+    marginTop: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  headerText: {
+    color: '#F39C12',
+    fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
   documentContainer: {
     marginVertical: 10,
@@ -137,23 +138,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: '600',
-  },
-  signOutButton: {
-    backgroundColor: '#E74C3C',
-    padding: 12,
-    marginVertical: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  signOutButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   searchBar: {
     backgroundColor: '#34495E',

@@ -7,6 +7,7 @@ import { firestore } from '../config/FirebaseConfig';
 import { collection, addDoc } from 'firebase/firestore';
 import Config from 'react-native-config';
 import { getAuth } from 'firebase/auth';
+import { uploadImageToStorage } from '../services/ImageUploadService'; // Import the service
 
 // Define the type for combinedAnnotations
 interface AnnotationType {
@@ -24,46 +25,6 @@ const ScanPage = () => {
 
   const apiKey = '';
   const openAIKey = '';
-
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setImageUri(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error('Error picking image:', error);
-    }
-  };
-
-  const takePicture = async () => {
-    try {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera permissions to make this work!');
-        return;
-      }
-
-      let result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setImageUri(result.assets[0].uri);
-      }
-    } catch (error) {
-      console.error('Error taking picture:', error);
-    }
-  };
 
   const analyzeImage = async () => {
     try {
@@ -180,29 +141,30 @@ const ScanPage = () => {
 
   const { width: screenWidth } = Dimensions.get('window');
 
-  const uploadDataToFirestore = async (description: string, summarizedText: string, folderName: string) => {
+  const uploadDataToFirestore = async (description: string, summarizedText: string, folderName: string, imageUrl: string) => {
     try {
-        const auth = getAuth();
-        const user = auth.currentUser;
+      const auth = getAuth();
+      const user = auth.currentUser;
 
-        if (!user) {
-            console.error('No user is currently logged in');
-            return;
-        }
+      if (!user) {
+        console.error('No user is currently logged in');
+        return;
+      }
 
-        const brevioFilesCollection = collection(firestore, 'Brevio_files');
+      const brevioFilesCollection = collection(firestore, 'Brevio_files');
 
-        await addDoc(brevioFilesCollection, {
-            folderName,
-            description,
-            summarizedText,
-            userId: user.uid,
-            timestamp: new Date()
-        });
+      await addDoc(brevioFilesCollection, {
+        folderName,
+        description,
+        summarizedText,
+        userId: user.uid,
+        imageUrl,
+        timestamp: new Date()
+      });
 
-        console.log('Data uploaded to Firestore successfully!');
+      console.log('Data uploaded to Firestore successfully!');
     } catch (error) {
-        console.error('Error uploading data to Firestore:', error);
+      console.error('Error uploading data to Firestore:', error);
     }
   };
 
@@ -221,7 +183,12 @@ const ScanPage = () => {
         return;
       }
 
-      await uploadDataToFirestore(description, summarizedText, folderName);
+      if (!imageUri) {
+        alert('No image selected for upload');
+        return; // Exit if imageUri is null
+      }
+      const imageUrl = await uploadImageToStorage(imageUri); // Use the service to upload the image
+      await uploadDataToFirestore(description, summarizedText, folderName, imageUrl); // Pass the image URL
 
       setModalVisible(false);
       alert('Data has been successfully saved to Firestore!');
@@ -241,6 +208,34 @@ const ScanPage = () => {
     setSummarizedText('');
     setFolderName('default-folder');
     setModalVisible(false);
+  };
+
+  const pickImage = async () => {
+    // Implement the image picking logic here
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
+  const takePicture = async () => {
+    // Implement the logic to take a picture using the camera
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
   };
 
   return (
@@ -342,7 +337,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: '#2C3E50',
-    padding: 10,
+    paddingHorizontal: 20,
   },
   header: {
     backgroundColor: '#34495E',
@@ -350,6 +345,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
     alignItems: 'center',
+    marginTop: 40,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
