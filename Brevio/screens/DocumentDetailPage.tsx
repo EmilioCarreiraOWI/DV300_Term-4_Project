@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { firestore } from '../config/FirebaseConfig';
+import { doc, deleteDoc } from 'firebase/firestore';
 
 interface DocumentData {
+  id: string;
   folderName: string;
   description: string;
   summarizedText: string;
@@ -14,6 +17,17 @@ type DocumentDetailRouteProp = RouteProp<{ params: { document: DocumentData } },
 const DocumentDetailPage = () => {
   const route = useRoute<DocumentDetailRouteProp>();
   const { document } = route.params;
+
+  const handleDelete = async () => {
+    const documentRef = doc(firestore, 'documents', document.id);
+    try {
+      await deleteDoc(documentRef);
+      Alert.alert('Success', 'Document deleted successfully');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete document');
+      console.error("Error deleting document: ", error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -33,6 +47,10 @@ const DocumentDetailPage = () => {
         <Text style={styles.sectionTitle}>Description</Text>
         <Text style={styles.description}>{document.description}</Text>
       </View>
+
+      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+        <Text style={styles.deleteButtonText}>Delete Document</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -114,6 +132,18 @@ const styles = StyleSheet.create({
     height: 400,
     borderRadius: 10,
     resizeMode: 'contain',    
+  },
+  deleteButton: {
+    backgroundColor: '#E74C3C',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  deleteButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

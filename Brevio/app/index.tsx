@@ -9,7 +9,8 @@ import HomePage from '../screens/HomePage';
 import ScanPage from '../screens/ScanPage';
 import FilePage from '../screens/FilePage';
 import DocumentDetailPage from '../screens/DocumentDetailPage';
-import { auth } from '../config/FirebaseConfig'; // Import auth from FirebaseConfig
+import { auth } from '../config/FirebaseConfig';
+
 // Define the types for navigation parameters
 export type RootStackParamList = {
   Home: undefined;
@@ -20,8 +21,9 @@ export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   DocumentDetail: { document: Document };
+  HomeTab: undefined;
 };
-  
+
 // Create stack navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -92,7 +94,7 @@ export default function Index() {
     >
       {loggedIn ? (
         <>
-          <Stack.Screen name="Home" component={BottomTabs} options={{ headerShown: false }} />
+          <Stack.Screen name="HomeTab" component={BottomTabs} options={{ headerShown: false }} />
           <Stack.Screen name="DocumentDetail" component={DocumentDetailPage} options={{ headerShown: true }} />
         </>
       ) : (

@@ -22,12 +22,16 @@ const ScanPage = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [folderName, setFolderName] = useState<string>('default-folder');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [uploadPressed, setUploadPressed] = useState<boolean>(false); // State to track if upload button has been pressed
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false); // State to track if analyzing is in progress
+  const [isSummarizing, setIsSummarizing] = useState<boolean>(false); // State to track if summarizing is in progress
 
   const apiKey = '';
   const openAIKey = '';
 
   const analyzeImage = async () => {
     try {
+      setIsAnalyzing(true); // Set to true when the analyze process starts
       setIsLoading(true);
       if (!imageUri) {
         alert('No image selected');
@@ -70,6 +74,7 @@ const ScanPage = () => {
       }
     } finally {
       setIsLoading(false);
+      setIsAnalyzing(false); // Reset the state after the analyze process
     }
   };
 
@@ -125,6 +130,7 @@ const ScanPage = () => {
 
   const summarizeText = async () => {
     try {
+      setIsSummarizing(true); // Set to true when the summarize process starts
       setIsLoading(true);
       if (description) {
         const summary = await summarizeTextWithOpenAI(description);
@@ -136,6 +142,7 @@ const ScanPage = () => {
       console.error('Error summarizing text:', error);
     } finally {
       setIsLoading(false);
+      setIsSummarizing(false); // Reset the state after the summarize process
     }
   };
 
@@ -178,6 +185,7 @@ const ScanPage = () => {
 
   const uploadData = async () => {
     try {
+      setUploadPressed(true); // Set to true when the upload process starts
       if (!folderName) {
         alert('Please enter a folder name');
         return;
@@ -191,7 +199,7 @@ const ScanPage = () => {
       await uploadDataToFirestore(description, summarizedText, folderName, imageUrl); // Pass the image URL
 
       setModalVisible(false);
-      alert('Data has been successfully saved to Firestore!');
+      // alert('Data has been successfully saved to Firestore!');
 
       setImageUri(null);
       setDescription('');
@@ -199,6 +207,8 @@ const ScanPage = () => {
       setFolderName('default-folder');
     } catch (error) {
       console.error('Error uploading data:', error);
+    } finally {
+      setUploadPressed(false); // Reset the state after the upload process
     }
   };
 
@@ -260,23 +270,47 @@ const ScanPage = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={analyzeImage} style={styles.touchableButtonBottom}>
-        <Text style={styles.buttonText}>Analyze Image</Text>
-      </TouchableOpacity>
+      {imageUri && ( // Show buttons only if an image is selected
+        <>
+          <TouchableOpacity
+            onPress={analyzeImage}
+            style={[styles.touchableButtonBottom, isAnalyzing ? { backgroundColor: '#888' } : {}]} // Change background color if analyzing
+            activeOpacity={isAnalyzing ? 0.5 : 0.7} // Change opacity when pressed
+          >
+            <Text style={styles.buttonText}>Analyze Image</Text>
+          </TouchableOpacity>
 
-      {description && (
-        <TouchableOpacity onPress={summarizeText} style={styles.touchableButtonBottom}>
-          <Text style={styles.buttonText}>Summarize Text</Text>
-        </TouchableOpacity>
+          {description && (
+            <TouchableOpacity
+              onPress={summarizeText}
+              style={[styles.touchableButtonBottom, isSummarizing ? { backgroundColor: '#888' } : {}]} // Change background color if summarizing
+              activeOpacity={isSummarizing ? 0.5 : 0.7} // Change opacity when pressed
+            >
+              <Text style={styles.buttonText}>Summarize Text</Text>
+            </TouchableOpacity>
+          )}
+
+          {(summarizedText || description) && ( // Show Upload Data and Reset buttons after summarization
+            <>
+              <TouchableOpacity
+                onPress={handleDataAndUpload}
+                style={[styles.touchableButtonBottom, uploadPressed ? { backgroundColor: '#888' } : {}]} // Change background color if pressed
+                activeOpacity={uploadPressed ? 0.5 : 0.7} // Change opacity when pressed
+              >
+                <Text style={styles.buttonText}>Upload Data</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={resetState}
+                style={[styles.touchableButtonBottom, uploadPressed ? { backgroundColor: '#888' } : {}]} // Change background color if pressed
+                activeOpacity={uploadPressed ? 0.5 : 0.7} // Change opacity when pressed
+              >
+                <Text style={styles.buttonText}>Reset</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </>
       )}
-
-      <TouchableOpacity onPress={handleDataAndUpload} style={styles.touchableButtonBottom}>
-        <Text style={styles.buttonText}>Upload Data</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={resetState} style={styles.touchableButtonBottom}>
-        <Text style={styles.buttonText}>Reset</Text>
-      </TouchableOpacity>
 
       {isLoading && (
         <ActivityIndicator size="large" color="#F39C12" style={{ marginVertical: 20 }} />
@@ -284,9 +318,9 @@ const ScanPage = () => {
 
       {summarizedText && (
         <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Summary</Text>
-        <Text style={styles.summary}>{summarizedText}</Text>
-      </View>
+          <Text style={styles.sectionTitle}>Summary</Text>
+          <Text style={styles.summary}>{summarizedText}</Text>
+        </View>
       )}
 
       {description && (
@@ -375,7 +409,7 @@ const styles = StyleSheet.create({
   },
   touchableButtonRow: {
     backgroundColor: '#F39C12',
-    paddingVertical: 15,
+    paddingVertical: 10,
     marginHorizontal: 5,
     borderRadius: 10,
     alignItems: 'center',
@@ -389,7 +423,7 @@ const styles = StyleSheet.create({
   },
   touchableButtonBottom: {
     backgroundColor: '#F39C12',
-    paddingVertical: 15,
+    paddingVertical: 10,
     marginHorizontal: 5,
     borderRadius: 10,
     alignItems: 'center',
