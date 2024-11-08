@@ -1,14 +1,14 @@
-# 📱 My AI-Powered React Native App
+# ![Group 251](https://github.com/user-attachments/assets/f14c059e-b88d-447f-915f-72391549ee60)
+## 📖 About Brevio
 
-Welcome to the **My AI-Powered App**! This mobile app, built using React Native and Expo, leverages powerful AI capabilities to deliver next-gen features and an exceptional user experience.
+Welcome to the **Brevio**. This mobile app, built with React Native and Expo, takes advantage of powerful AI capabilities to provide insights from large documents and any related image with text. The application is adaptable and can work in any language, including handwriting and upside down text. Avoid spending hours reading a document that may not be relevant to your research. Scan in and determine in seconds if the document is for you by receiving a brief summary of the document.
 
 ## 🧠 About the Project
 
-This application brings AI services to mobile users, offering intelligent solutions through cutting-edge machine learning and AI models. Built with a focus on user-friendliness, efficiency, and innovation, the app integrates seamlessly into various scenarios, such as:
+This project had an open brief that required the use of open-source AI. For my project, I created a scanning app that gives users a brief summary of their documents. To accomplish this, I used two AI models to help extract and summarise text from images, resulting in efficient document insights.
 
-- **[AI Service 1]:** Brief description of this service (e.g., Image Recognition)
-- **[AI Service 2]:** Brief description of this service (e.g., Text Analysis)
-- **[AI Service 3]:** Brief description of this service (e.g., Natural Language Processing)
+- **[Google Vision]:** This AI is in charge of image recognition and is capable of extracting the words from the image and displaying them in back for the user.
+- **[OpenAI]:** This AI is in charge of taking the extracted words and turning them into a summary. so that the user can easily read what the document is about.
 
 ## 🛠️ Built With
 
