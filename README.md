@@ -45,13 +45,13 @@ Ensure you have the following installed:
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/yourusername/your-repo-name.git
+    git clone https://github.com/EmilioCarreiraOWI/DV300_Term-4_Project.git
     ```
 
 2. **Navigate to Project Directory:**
 
     ```bash
-    cd your-repo-name
+    cd Brevio
     ```
 
 3. **Install Dependencies:**
@@ -63,27 +63,78 @@ Ensure you have the following installed:
 4. **Run the App:**
 
     ```bash
-    expo start
+    npm expo start
     ```
 
 5. **Access on Your Device:**
 
    Use the Expo Go app on iOS or Android to scan the QR code and preview the app.
 
-## 🌐 Usage
+## 👥 Peer Review
 
-1. **Sign Up/Login** - Quickly sign up or log in to access features.
-2. **[Feature 1]** - How to use feature (e.g., Upload an image for recognition).
-3. **[Feature 2]** - How to use feature (e.g., Type in text for analysis).
-4. **[Feature 3]** - How to use feature (e.g., Access personalized insights).
+Feedback from peers is invaluable to refining and enhancing this project. Feel free to review the code, explore the app, and share your insights. Here are some suggested areas for feedback:
 
-## 🤖 AI Integration
+- **User Experience and Experience**:
+  - How easy is the app's interface for first-time users? Are there any parts of the navigation or feature discovery that feel unclear or complicated?
+  - Are there any UI elements that could be improved to provide a more streamlined user experience, particularly when scanning documents?
+- **Functionality and Reliability**:
+  - How reliable is the scanning feature? Is there a problem with document clarity, edge detection, or image quality after scanning?
+  - Have you experienced any bugs or crashes? If so, could you please explain the circumstances?
+- **Performance and Speed**:
+  - Does the app feel responsive while scanning, processing, and saving? Is there any noticeable lag or delay?
+  - Do you think there are any areas where performance could be improved for a better experience?
+- **Features and Enhancements**:
+  - Are there any features you believe would improve the app's usability or functionality?
+  - Do you believe the app meets the needs of its target audience? If not, what additional functionality do you recommend?
+- **Overall Impression and Suggestions**:
+  - What is your overall impression of the application? Does it feel polished and ready for end users?
+  - Do you have any other suggestions for improving the app's functionality or user experience?
 
-This app uses [AI Technology/Model Name] to provide smart insights and features, including:
+Please submit your feedback through [GitHub Issues](https://github.com/yourusername/your-repo-name/issues) or email me directly at [your-email@example.com].
 
-- **Feature 1** - Explain the AI model/tech used
-- **Feature 2** - Explain the AI model/tech used
-- **Feature 3** - Explain the AI model/tech used
+### Marine Du Plessis
+
+- **User Experience and Experience**:
+  - "It was a very easy to understand as a first time user. No none of the navigation  felt unclear for me. Maybe just change the color of the buttons text to not be white you can't see it very well."
+- **Functionality and Reliability**:
+  - "The scanning feature is very reliable and very fun to use. Their was no problem for me with the scanning feature. I did experience a crash/bug, when I change the folder name from default to something else and    
+then click on upload the app then closes."
+- **Performance and Speed**:
+  - "There was no noticeable lag with how responsive it is when scanning. No, I do not think there is any area to improve the performance."
+- **Features and Enhancements**:
+  - "Maybe the way you enter enter name seeing that someone can use the same name again and again. Yes, I believe that the app meets the target audience that it is minted to be for."
+- **Overall Impression and Suggestions**:
+  - "My overall impression of the app was very exciting for the features that was implemented. I feel their might be some polishing needed with button text colours, other than that it is ready for end users. No, I do not have anything to give for improvements of the app."
+ 
+### Nico Van Wyk
+
+- **User Experience and Experience**:
+  - "The app's UI was easy to understand, even as a user with no context as to what the app does. The buttons were named well, but you could maybe add a label above/below each to explain what they do for users who struggle."
+  - "When scanning documents, a hidden label might be made visible with text like "scroll down to see text" to let the user know the text has been scanned"
+- **Functionality and Reliability**:
+  - "The scanning feature was extremely reliable, however it did pick up text that is not a part of the document. To solve this, you could just add a label telling the user to place the text on a surface with no text such as a table, or to crop out all text they dont want scanned."
+  - "The app crashed when I uploaded a different named entry."
+- **Performance and Speed**:
+  - "There was no noticeable lag or delay."
+  - "I cannot think of an area where performance could be improved."
+- **Features and Enhancements**:
+  - "A way to edit the name of the entry you added, as someone might accidentally add multiple default-folder names."
+  - "The app definitely meets the audience's needs, it was a quick and easy way to both turna  document into text and summarise it."
+- **Overall Impression and Suggestions**:
+  - "The app feels polished, and was very impressive to see. The only improvement would be to add editing functionality to the title if it isn't already added."
+
+### Anke Du Raan
+
+- **User Experience and Experience**:
+  - "It was easy to use the app. especially with the button on the home screen, navigating you to the scan screen. I would maybe change "File" to "Your Files". Maybe the "Analyze image", "Upload data", and "rest" buttons can be hidden until the user uploads or picks a image with text or even make them appear as of they are disabled. The headings on each page kind of looks like buttons which would make people want to tap on it."
+- **Functionality and Reliability**:
+  - "Scanning feature is reliable and works perfectly."
+- **Performance and Speed**:
+  - "No lagging on my side but I did added a commit about the UI."
+- **Features and Enhancements**:
+  - "Maybe add a function where when you add a name of the document it checks if there is a file with the same name. If none then the file saves of there are the user will be notified."
+- **Overall Impression and Suggestions**:
+  - "Feature are ready for usage just refer to the comment on about the UI. Other then that well done."
 
 ## 📷 Screenshots
 
