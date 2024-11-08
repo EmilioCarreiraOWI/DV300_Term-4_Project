@@ -14,7 +14,14 @@ This project had an open brief that required the use of open-source AI. For my p
 
 - **React Native** - For cross-platform mobile development
 - **Expo** - To streamline development and simplify testing
-- **AI/ML Model** - [Add Model or Library Used] (e.g., TensorFlow, OpenAI API, etc.)
+  - **Image Picker** - For selecting images from the user's library or camera
+  - **File System** - To handle file operations within the app
+- **Axios** - For making HTTP requests to APIs
+- **Firebase** - Backend-as-a-Service for app data management and authentication
+  - **Firestore** - For storing user document data
+  - **Firebase Auth** - For handling user authentication
+- **react-native-config** - For managing environment variables securely
+- **Custom Image Upload Service** - To handle uploading images to cloud storage
 
 ## 🚀 Getting Started
 
