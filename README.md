@@ -18,10 +18,16 @@ This project had an open brief that required the use of open-source AI. For my p
   - **File System** - To handle file operations within the app
 - **Axios** - For making HTTP requests to APIs
 - **Firebase** - Backend-as-a-Service for app data management and authentication
-  - **Firestore** - For storing user document data
-  - **Firebase Auth** - For handling user authentication
+  - **Firestore** - For storing and retrieving user data in real-time
+  - **Firebase Auth** - For handling user authentication and managing sessions
 - **react-native-config** - For managing environment variables securely
-- **Custom Image Upload Service** - To handle uploading images to cloud storage
+- **react-native-vector-icons** - Provides customizable icons for React Native
+- **React Navigation** - For navigation within the app
+  - **Native Stack Navigator** - To manage screen transitions
+- **Custom Services**
+  - **Image Upload Service** - Handles image uploading to cloud storage
+  - **Auth Service** - Manages user login functionality
+  - **Create User Service** - Adds new users to Firestore
 
 ## 🚀 Getting Started
 
