@@ -160,27 +160,19 @@ then click on upload the app then closes."
 <img width="1500" alt="iPhone 15 Pro 6" src="https://github.com/user-attachments/assets/030c390d-c58a-4608-b28e-b026790121b9">
 <img width="1500" alt="iPhone 15 Pro 1" src="https://github.com/user-attachments/assets/5e298680-cd64-4914-84e2-2356bb8a7f59">
 
-
-## 🚧 Roadmap
-
-- [ ] Add more AI features
-- [ ] Optimize for iOS & Android
-- [ ] Implement cloud data storage
-
 ## 🎓 References
 
+### How to Implement OpenAI Turorial:
 - Coursedotcom. (2023, January 10). *How to implement AI in React Native using OpenAI API*. YouTube. https://www.youtube.com/watch?v=jizE-mWtaF4
+
+### How to Implement Google Vision Tutorial:
 - TechWithTim. (2023, February 14). *AI services in React Native with Expo tutorial*. YouTube. https://www.youtube.com/watch?v=iir0ezSvRLw
-
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 🖇️ Contact
 
-- **Your Name** - [LinkedIn](https://linkedin.com/in/your-profile) - [Email](mailto:your-email@example.com)
-- **Project Link**: [https://github.com/yourusername/your-repo-name](https://github.com/yourusername/your-repo-name)
+- **Emilio Carreira** - [LinkedIn](https://www.linkedin.com/in/emilio-carreira-b79797333/) - [Email](221350@virtualwindow.co.za)
+- **Demo Walkthough Video**: [https://github.com/yourusername/your-repo-name](https://github.com/yourusername/your-repo-name)
 
 ---
 
-Enjoy using **My AI-Powered App**! If you have any suggestions or improvements, feel free to contribute.
+Enjoy using **Brevio**! If you have any suggestions or improvements, feel free to contribute.
