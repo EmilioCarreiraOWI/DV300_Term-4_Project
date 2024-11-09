@@ -63,7 +63,7 @@ Ensure you have the following installed:
 4. **Run the App:**
 
     ```bash
-    npm expo start
+    npx expo start
     ```
 
 5. **Access on Your Device:**
@@ -152,10 +152,14 @@ then click on upload the app then closes."
 - **Overall Impression and Suggestions**:
   - "Feature are ready for usage just refer to the comment on about the UI. Other then that well done."
 
-## 📷 Screenshots
+## 📷 Mockups
 
-![Screenshot 1](./assets/screenshots/screenshot1.png)
-![Screenshot 2](./assets/screenshots/screenshot2.png)
+<img width="1500" alt="iPhone 15 Pro 9" src="https://github.com/user-attachments/assets/0580bd2b-998a-475e-80fe-2e8454bf9aa7">
+<img width="1500" alt="iPhone 15 Pro 3" src="https://github.com/user-attachments/assets/4de6ed5e-956b-4562-93ed-d269d07e034f">
+<img width="1500" alt="iPhone 15 Pro 2" src="https://github.com/user-attachments/assets/5b6b1089-4004-4feb-bf52-29cc706f9f8d">
+<img width="1500" alt="iPhone 15 Pro 6" src="https://github.com/user-attachments/assets/030c390d-c58a-4608-b28e-b026790121b9">
+<img width="1500" alt="iPhone 15 Pro 1" src="https://github.com/user-attachments/assets/5e298680-cd64-4914-84e2-2356bb8a7f59">
+
 
 ## 🚧 Roadmap
 
