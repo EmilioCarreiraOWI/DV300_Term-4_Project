@@ -171,7 +171,6 @@ then click on upload the app then closes."
 ## 🖇️ Contact
 
 - **Emilio Carreira** - [LinkedIn](https://www.linkedin.com/in/emilio-carreira-b79797333/) - [Email](221350@virtualwindow.co.za)
-- **Demo Walkthough Video**: [https://github.com/yourusername/your-repo-name](https://github.com/yourusername/your-repo-name)
 
 ---
 
